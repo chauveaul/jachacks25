@@ -1,74 +1,117 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useState, useEffect } from "react";
+import { BookIcon } from "@/assets/icons";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
+import { Button } from "react-native-elements";
+import { prepare, connect, disconnect } from "react-native-vpn-ipsec";
 
 export default function HomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [vpnToggled, setVpnToggled] = useState(false);
+
+  useEffect(() => {
+    prepare();
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 56, color: "#97979B" }}>1:00:00</Text>
+      <Button
+        title="Edit Timer"
+        buttonStyle={{
+          backgroundColor: "#97979B",
+          borderRadius: 32,
+          padding: 10,
+        }}
+        onPress={() => setModalVisible(true)}
+      />
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+        }}
+      >
+        <View
+          style={{
+            margin: 20,
+            backgroundColor: "white",
+            borderRadius: 10,
+            padding: 35,
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "center",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+          }}
+        >
+          <Text>Test</Text>
+          <Button title="Done" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+
+      <TouchableOpacity
+        style={{
+          width: 250,
+          height: 250,
+          borderColor: "#0AD6CF",
+          borderWidth: 6,
+          borderRadius: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 40,
+        }}
+        onPress={() => {
+          if (vpnToggled) {
+            disconnect();
+            setVpnToggled(false);
+          } else {
+            connect(
+              "name",
+              "10.0.0.3:1194",
+              "lufa",
+              "lufa",
+              "z/OWXE0Ms1RS6OQX4jZCh54J+WajJbzxin0YiMEl/Xs=",
+              false,
+            );
+            setVpnToggled(true);
+          }
+        }}
+      >
+        <BookIcon />
+      </TouchableOpacity>
+      <Text
+        style={{
+          fontSize: 56,
+          color: "#97979B",
+          marginVertical: 10,
+          marginTop: 40,
+        }}
+      >
+        Domains
+      </Text>
+      <Text style={{ fontSize: 26, color: "#97979B" }}>
+        https://instagram.com/reels
+      </Text>
+      {/*Line break*/}
+      <View
+        style={{
+          height: 1,
+          backgroundColor: "#97979B",
+          marginVertical: 10,
+          width: "60%",
+          alignSelf: "center",
+        }}
+      />
+      <Text style={{ fontSize: 26, color: "#97979B" }}>
+        https://youtube.com/shorts
+      </Text>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
